@@ -26,6 +26,14 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    Block:{
+      type: Number,
+   default:0,
+    },
+    donHang:{
+      type: Array,
+      default:0,
+    },
     profilePic: {
       type: String,
       default: "",
