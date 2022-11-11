@@ -12,6 +12,8 @@ const multer = require("multer");
 const path = require("path");
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
+const { Router } = require("express");
+const router = express.Router()
 dotenv.config();
 
 mongoose
