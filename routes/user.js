@@ -26,6 +26,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+// GetUserAnd DonHang:
+
 
 //Delete
 router.delete("/:id", async (req, res) => {
@@ -52,6 +54,7 @@ router.get("/:id", async (req, res) => {
     const user = await User.findById(req.params.id);
 
     const { password, ...other } = user._doc;
+    console.log( user._doc)
     res.status(200).json(other);
   } catch (err) {
     res.status(500).json(err);

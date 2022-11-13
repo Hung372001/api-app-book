@@ -12,8 +12,11 @@ const multer = require("multer");
 const path = require("path");
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
+const donHangRoute = require("./routes/donHang");
+const join =require("./routes/Join")
 const { Router } = require("express");
-const router = express.Router()
+const router = express.Router();
+
 dotenv.config();
 
 mongoose
@@ -28,5 +31,8 @@ app.use(express.json());
 app.listen(4000, () => {
   console.log(1234);
 });
+app.use("/",router)
+app.use("/api/join",join)
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
+app.use("/api/donhang",donHangRoute);
