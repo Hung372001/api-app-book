@@ -9,12 +9,13 @@ router.post("/register", async (req, res) => {
 
     const newUser = new User({
       username: req.body.username,
-      StudentCode: req.body.StudentCode,
       email: req.body.email,
       password: req.body.password,
+      phoneNumber: req.body.phoneNumber,
     });
 
     const user = await newUser.save();
+    console.log(user)
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json(err);

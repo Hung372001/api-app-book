@@ -7,10 +7,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    modeUser: {
-      type: String,
-      default: "",
-    },
+ 
     email: {
       type: String,
       required: true,
@@ -20,7 +17,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-  
+
     phoneNumber: {
       type: Number,
       unique: true,
@@ -34,10 +31,7 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default:0,
     },
-    profilePic: {
-      type: String,
-      default: "",
-    },
+   
   },
   { timestamps: true }
 );

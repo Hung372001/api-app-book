@@ -1,10 +1,9 @@
 {
   "name": "book-app",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-   "start":"nodemon index.js"
+    "start": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,5 +17,15 @@
     "nodemon": "^2.0.15",
     "Parser": "^0.0.1",
     "path": "^0.12.7"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hung372001/api-app-book.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hung372001/api-app-book/issues"
+  },
+  "homepage": "https://github.com/Hung372001/api-app-book#readme",
+  "description": ""
 }
