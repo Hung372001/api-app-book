@@ -3,97 +3,94 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
-// const storage = multer.diskStorage({
-//   destination: "./upload/TaiLieu",
-//   filename: (req, file, cb) => {
-//     return cb(
-//       null,
-//       `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`
-//     );
-//   },
-// });
+const fs = require("fs")
+const storage = multer.diskStorage({
+  destination: "./public/images",
+  filename: (req, file, cb) => {
+    return cb(
+      null,
+      `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`
+    );
+  },
+});
+const fileFilter = (req, file, cb) => {
+  // reject a file
+  if (["image/jpg","image/jpeg"].includes( file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+const upload = multer({
+  storage:storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+});
 
-// const upload = multer({
-//   storage: storage,
-//   limits: {
-//     fileSize: 1024 * 1024 * 5,
-//   },
-// });
 
-const Product = require("../models/product");
-
-router.get("/", async (req, res) => {
-  const username = req.query.user;
-  const catName = req.query.cat;
+const Book = require("../models/book");
+router.delete("/",(req,res)=>{
+  fs.unlink("./upload/images/img_1668535921030.jpg",(err)=>{
+console.log(err)
+  })
+  res.json("xoa thanh cong")
+})
+router.post("/",upload.single('img'),function (req, res){
+  
+ try{
+  console.log(req.file);
+  const newBook = new Book({     
+    nameBook: req.body.nameBook,
+    nhaCungCap : req.body.nhaCungCap,
+    nhaXuatBan: req.body.nhaXuatBan,
+    tacGia: req.body.tacGia,
+    bia: req.body.bia,
+    theLoai:req.body.theLoai,
+    loaiSach:req.body.loaiSach,
+    theLoaiChinh:req.body.theLoaiChinh,
+    gia:req.body.gia,
+    img:req.file.path
+  });
+  
+  newBook.save();
+  res.status(200).json("test1")
+ }catch(err){
+  console.log(err)
+  res.status(500).json(err)
+ }
+})
+router.get("/",async (req,res)=>{
+  try{
+ const book = await Book.find();
+ res.status(200).json(book);
+} catch (err) {
+  res.status(500).json(err);
+}
+});
+router.get("/:id",async (req,res)=>{
+  try{
+    const book = await Book.findById(req.params.id);
+    
+    res.status(200).json(book);
+  }catch(err){
+    res.status(500).json(err);
+  }
+})
+router.put("/:id",async (req,res)=>{
   try {
-    let posts;
-    if (username) {
-      posts = await Product.find({ username });
-    } else if (catName) {
-      posts = await Product.find({
-        categories: {
-          $in: [catName],
-        },
-      });
-    } else {
-      posts = await Product.find();
-    }
-    res.status(200).json(posts);
+    const upadteBook = await Book.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(upadteBook);
+    console.log(upadteBook)
   } catch (err) {
     res.status(500).json(err);
   }
-});
-
-
-router.get("/:productId", (req, res, next) => {
-  const id = req.params.productId;
-  Product.findById(id)
-    .select("name price _id productImage")
-    .exec()
-    .then((doc) => {
-      console.log("From database", doc);
-      if (doc) {
-        res.status(200).json({
-          product: doc,
-          request: {
-            type: "GET",
-            url: "http://localhost:3000/products",
-          },
-        });
-      } else {
-        res
-          .status(404)
-          .json({ message: "No valid entry found for provided ID" });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ error: err });
-    });
-});
-
-
-
-router.delete("/:productId", (req, res, next) => {
-  const id = req.params.productId;
-  Product.remove({ _id: id })
-    .exec()
-    .then((result) => {
-      res.status(200).json({
-        message: "Product deleted",
-        request: {
-          type: "POST",
-          url: "http://localhost:3000/products",
-          body: { name: "String", price: "Number" },
-        },
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        error: err,
-      });
-    });
-});
-
+})
 module.exports = router;

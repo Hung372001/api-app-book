@@ -39,11 +39,10 @@ const BookSchema = new mongoose.Schema(
         type: Number,
         default: 0,
     },
-    imageBook:
+    img:
     {
         type: String,
-        required: false, 
-       
+        required: true,   
     }
   },
   { timestamps: true }
