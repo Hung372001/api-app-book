@@ -6,7 +6,7 @@ router.put("/:id", async (req, res) => {
   if (req.body.userId === req.params.id) {
     if (req.body.password) {
    
-      req.body.password = await req.body.password, salt;
+      req.body.password = await req.body.password;
     }
     try {
       const updatedUser = await User.findByIdAndUpdate(
