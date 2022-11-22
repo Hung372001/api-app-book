@@ -3,7 +3,8 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
-const fs = require("fs")
+const fs = require("fs");
+const PAGE_SIZE =12;
 const storage = multer.diskStorage({
   destination: "./public/images",
   filename: (req, file, cb) => {
@@ -30,7 +31,8 @@ const upload = multer({
 });
 
 
-const Book = require("../models/book");
+const Book = require("../models/Book");
+const User = require("../models/User");
 router.delete("/",(req,res)=>{
   fs.unlink("./upload/images/img_1668535921030.jpg",(err)=>{
 console.log(err)
@@ -41,6 +43,7 @@ router.post("/",upload.single('img'),function (req, res){
   
  try{
   console.log(req.file);
+  const skipCharactersCount = path.join(__dirname,'..','public').length;
   const newBook = new Book({     
     nameBook: req.body.nameBook,
     nhaCungCap : req.body.nhaCungCap,
@@ -51,29 +54,46 @@ router.post("/",upload.single('img'),function (req, res){
     loaiSach:req.body.loaiSach,
     theLoaiChinh:req.body.theLoaiChinh,
     gia:req.body.gia,
-    img:req.file.path
+    img:req.file.path.replace(/\\/g, "/").slice(6),
   });
-  
-  newBook.save();
-  res.status(200).json("test1")
+
+  const book = newBook.save();
+  res.status(200).json(book)
  }catch(err){
   console.log(err)
   res.status(500).json(err)
  }
 })
 router.get("/",async (req,res)=>{
+  let page = req.query.page;
   try{
- const book = await Book.find();
- res.status(200).json(book);
+    if(page){
+      page =parseInt(page);
+      let skipItem= (page-1)*PAGE_SIZE;
+      Book.find({}).skip(skipItem).limit(PAGE_SIZE).then(data=>{
+        res.status(200).json(data)
+      })
+      .catch(err=>{
+        res.status(500).json(err);
+      })
+    }else{
+      const book = await Book.find();
+      res.status(200).json(book);
+    }
+
 } catch (err) {
   res.status(500).json(err);
 }
 });
 router.get("/:id",async (req,res)=>{
+
   try{
-    const book = await Book.findById(req.params.id);
+  
+      const book = await Book.findById(req.params.id);
     
-    res.status(200).json(book);
+      res.status(200).json(book);
+    
+ 
   }catch(err){
     res.status(500).json(err);
   }

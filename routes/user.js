@@ -1,12 +1,13 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const Post = require("../models/Post");
+const PAGE_SIZE =12;
 //Update
 router.put("/:id", async (req, res) => {
   if (req.body.userId === req.params.id) {
     if (req.body.password) {
-   
-      req.body.password = await req.body.password;
+      const salt = await bcrypt.genSalt(10);
+      req.body.password = await bcrypt.hash(req.body.password, salt);
     }
     try {
       const updatedUser = await User.findByIdAndUpdate(
@@ -24,8 +25,6 @@ router.put("/:id", async (req, res) => {
     res.status(401).json("You can update only your account!");
   }
 });
-
-// GetUserAnd DonHang:
 
 
 //Delete
@@ -53,17 +52,32 @@ router.get("/:id", async (req, res) => {
     const user = await User.findById(req.params.id);
 
     const { password, ...other } = user._doc;
-    console.log( user._doc)
     res.status(200).json(other);
   } catch (err) {
     res.status(500).json(err);
   }
 });
-router.get("/", async (req, res) => {
-  try {
-    const user = await User.find();
 
-    res.status(200).json(user);
+router.get("/", async (req, res) => {
+  let page = req.query.page;
+  try {
+    if(page){
+      page =parseInt(page);
+      let skipItem= (page-1)*PAGE_SIZE;
+      User.find({}).skip(skipItem).limit(PAGE_SIZE).then(data=>{
+        res.status(200).json(data)
+      })
+      .catch(err=>{
+        res.status(500).json(err);
+      })
+    }else{
+
+      const user = await User.find();
+
+      res.status(200).json(user);
+    }
+
+   
   } catch (err) {
     res.status(500).json(err);
   }

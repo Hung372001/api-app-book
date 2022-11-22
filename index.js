@@ -25,13 +25,13 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use(express.json());
-app.listen(4000, () => {
+app.listen(5000, () => {
   console.log(1234);
 });
 
 app.use(express.static("./public"));
 app.use(cors({
-  origin:["http://localhost:3001"]
+
 }))
 app.use("/api/join",join)
 app.use("/api/auth", authRoute);

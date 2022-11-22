@@ -5,8 +5,8 @@ const TheLoai = require("../models/TheLoai");
 
 router.get("/",(req,res)=>{
     try{
-const TheLoai=  TheLoai.find();
-res.status(200).json(TheLoai);
+const theLoai=  TheLoai.find();
+res.status(200).json(theLoai);
 
     }catch(err){
         res.status(500).json(err);
@@ -14,9 +14,9 @@ res.status(200).json(TheLoai);
 })
 router.get("/:id", async(req,res)=>{
     try{
-        const TheLoai = await Book.findById(req.params.id);
+        const theLoai = await TheLoai.findById(req.params.id);
         
-        res.status(200).json(TheLoai);
+        res.status(200).json(theLoai);
       }catch(err){
         res.status(500).json(err);
       }
@@ -24,12 +24,12 @@ router.get("/:id", async(req,res)=>{
 
 router.post("/", async(req,res)=>{
     try{
-     const TheLoai = new TheLoai({
+     const theLoai = new TheLoai({
         _id: new mongoose.Types.ObjectId(),
         name:req.body.name
      })
         
-        res.status(200).json(TheLoai);
+        res.status(200).json(theLoai);
       }catch(err){
         res.status(500).json(err);
       }
